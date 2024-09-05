@@ -98,6 +98,7 @@ namespace Projeto3b
 
             DateTime.TryParse(textBox3.Text, out dataParcela); //data inserida pelo usuario para pagar
             dataParcela = dataParcela.AddMonths(parcelas_pagas + 1); //obtém parcela atual para ser paga
+
             while ((int)dataParcela.DayOfWeek == 6 || (int)dataParcela.DayOfWeek == 0)
             {
                 dataParcela = dataParcela.AddDays(1);
@@ -109,35 +110,38 @@ namespace Projeto3b
                 MessageBox.Show("Todas as parcelas foram pagas!");
                 return;
             }
-            else
-            {
-                if (dataDoPagamento < dataParcela) //data inválida para pagar 
-                {
-                    MessageBox.Show("Data inválida! Não é possível pagar parcela antes da data da compra;");
-                }
-                else if (dataDoPagamento == dataParcela) //parcela paga na data correta
-                {
-                    parcelas_pagas++;
-                    MessageBox.Show("Pagamento efetuado!" + Environment.NewLine + "Parcelas pagas: " + parcelas_pagas.ToString() + "/" + numeroParcelas.ToString());
-                    //removendo do total
-                    valorTotal -= valorParcela;
-                    label4.Text = "Valor Total: " + valorTotal.ToString("C2");
-                    label7.Text = ""; //zera o label de aviso de parcela atrasada
-                }
-                else if (dataDoPagamento > dataParcela) //parcela paga com atraso
-                {
-                    parcelas_pagas++;
-                    float parcelaComJuros = valorParcela * 1.03F;
-                    valorTotal = (valorTotal - valorParcela + parcelaComJuros) - valorParcela;
-                    valorParcela = int.Parse(textBox1.Text) / int.Parse(textBox2.Text);
-                    juros_acumulados += (parcelaComJuros - valorParcela);
 
-                    MessageBox.Show("Pagamento realizado com atraso!" + Environment.NewLine + "Parcelas pagas: " + parcelas_pagas.ToString() + "/" + numeroParcelas.ToString());
-                    label4.Text = "Valor Total: " + valorTotal.ToString("C2");
-                    label7.Text = "OBS: Parcela paga com atraso. \nValor reajustado com juros: " + parcelaComJuros.ToString("C2");
-                    label8.Text = "Juros acumulados: " + juros_acumulados.ToString("C2");
-                }
-            }     
+            if (dataDoPagamento < dataParcela) //data inválida para pagar 
+            {
+                MessageBox.Show("Você deve pagar as parcelas na ordem. A próxima parcela a ser paga é a de " + dataParcela.ToString("dd/MM/yyyy"));
+            }
+            else if (dataDoPagamento == dataParcela) //parcela paga na data correta
+            {
+                parcelas_pagas++;
+                MessageBox.Show("Pagamento efetuado!" + Environment.NewLine + "Parcelas pagas: " + parcelas_pagas.ToString() + "/" + numeroParcelas.ToString());
+                //removendo do total
+                valorTotal -= valorParcela;
+                label4.Text = "Valor Total: " + valorTotal.ToString("C2");
+                label7.Text = ""; //zera o label de aviso de parcela atrasada
+            }
+            else if (dataDoPagamento > dataParcela && dataDoPagamento < dataParcela.AddMonths(1)) //parcela paga com atraso
+            {
+                parcelas_pagas++;
+                float parcelaComJuros = valorParcela * 1.03F;
+                valorTotal -= valorParcela;
+                valorParcela = int.Parse(textBox1.Text) / int.Parse(textBox2.Text);
+                juros_acumulados += (parcelaComJuros - valorParcela);
+
+                MessageBox.Show("Pagamento realizado com atraso!" + Environment.NewLine + "Parcelas pagas: " + parcelas_pagas.ToString() + "/" + numeroParcelas.ToString());
+                label4.Text = "Valor Total: " + valorTotal.ToString("C2");
+                label7.Text = "OBS: Parcela paga com atraso. \nValor reajustado com juros: " + parcelaComJuros.ToString("C2");
+                label8.Text = "Juros acumulados: " + juros_acumulados.ToString("C2");
+            }
+            else if(dataDoPagamento > dataParcela && dataDoPagamento >= dataParcela.AddMonths(1))
+            {
+                MessageBox.Show("Pague as parcelas na ordem. A próxima parcela a ser paga é a de " + dataParcela.ToString("dd/MM/yyyy"));
+            }
+                
 
             //remover do textBox4 a parcela paga
             textBox4.Text = "";
