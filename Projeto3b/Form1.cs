@@ -64,6 +64,7 @@ namespace Projeto3b
             valorParcela = valorTotal / numeroParcelas;
             textBox4.Text = ""; //zera o textBox para futuras simulações
             label7.Text = ""; //zera o label de juros para futuras simulações
+            label8.Text = ""; //zera o label de juros acumulados para futuras simulações
 
 
             //preenchendo textBox com as parcelas
